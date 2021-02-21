@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.author.dao.AuthorDao;
 import pl.coderslab.author.entity.Author;
+import pl.coderslab.author.repository.AuthorRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorService {
     private final AuthorDao authorDao;
+    private final AuthorRepository authorRepository;
 
     public void saveAuthor(Author author) {
         authorDao.saveAuthor(author);
@@ -33,5 +35,13 @@ public class AuthorService {
     public void delete(long id) {
         Author author = findById(id);
         authorDao.delete(author);
+    }
+
+    public List<Author> findAuthorsByEmailBegin(String email) {
+        return authorRepository.findAuthorsByEmailBegin(email);
+    }
+
+    public List<Author> findAuthorsByPeselBegin(String pesel) {
+        return authorRepository.findAutorsByPeselBegin(pesel);
     }
 }

@@ -18,16 +18,20 @@ Lista autorów
 <br><br>
 <table border="1">
     <tr>
-    <td>Id</td>
-    <td>Imię</td>
-    <td>Nazwisko</td>
-    <td></td>
+        <td>Id</td>
+        <td>Imię</td>
+        <td>Nazwisko</td>
+        <td>PESEL</td>
+        <td>Email</td>
+        <td></td>
     </tr>
     <c:forEach items="${authors}" var="author">
         <tr>
             <td>${author.id}</td>
             <td>${author.firstName}</td>
             <td>${author.lastName}</td>
+            <td>${author.pesel}</td>
+            <td>${author.email}</td>
             <td><a href="/author/form/edit/${author.id}">Edytuj</a> <a href="/author/form/confirm/${author.id}">Usuń</a></td>
         </tr>
     </c:forEach>

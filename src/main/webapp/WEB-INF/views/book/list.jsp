@@ -12,6 +12,8 @@
     <title>Title</title>
 </head>
 <body>
+${message}
+<br><br>
 Lista książek
 <br><br>
 <a href="/book/form/add">Dodaj książkę</a>
@@ -24,6 +26,8 @@ Lista książek
         <td>Opis</td>
         <td>Wydawca</td>
         <td>Autorzy</td>
+        <td>Ilość stron</td>
+        <td>Kategoria</td>
         <td></td>
     </tr>
     <c:forEach items="${books}" var="book">
@@ -34,6 +38,8 @@ Lista książek
             <td>${book.description}</td>
             <td>${book.publisher}</td>
             <td>${book.authors}</td>
+            <td>${book.pages}</td>
+            <td>${book.category}</td>
             <td><a href="/book/form/edit/${book.id}">Edytuj</a> <a href="/book/form/confirm/${book.id}">Usuń</a></td>
         </tr>
     </c:forEach>

@@ -3,12 +3,16 @@ package pl.coderslab.publisher.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.publisher.entity.Publisher;
 import pl.coderslab.publisher.service.PublisherService;
+
+import javax.validation.Valid;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/publisher/form")
@@ -30,7 +34,10 @@ public class PublisherFormController {
     }
 
     @PostMapping("/add")
-    public String save(Publisher publisher) {
+    public String save(@Valid Publisher publisher, BindingResult result) {
+        if (result.hasErrors()) {
+            return "/publisher/form";
+        }
         publisherService.savePublisher(publisher);
         return "redirect:/publisher/form/all";
     }
@@ -42,8 +49,11 @@ public class PublisherFormController {
     }
 
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable long id, Publisher publisher) {
+    public String update(@PathVariable long id, @Valid Publisher publisher, BindingResult result) {
         if (publisher.getId() == id) {
+            if (result.hasErrors()) {
+                return "/publisher/form";
+            }
             publisherService.update(publisher);
         }
         return "redirect:/publisher/form/all";
@@ -59,5 +69,27 @@ public class PublisherFormController {
     public String delete(@PathVariable long id) {
         publisherService.delete(id);
         return "redirect:/publisher/form/all";
+    }
+
+    @GetMapping("/search/nip/{nip}")
+    public String findFirstByNip(@PathVariable String nip, Model model) {
+        Publisher publisher = publisherService.findFirstByNip(nip);
+        if (publisher != null) {
+            model.addAttribute("publishers", Arrays.asList(publisher));
+        } else {
+            model.addAttribute("message", "Nie znaleziono wydawcy o podanym numerze NIP");
+        }
+        return "/publisher/list";
+    }
+
+    @GetMapping("/search/regon/{regon}")
+    public String findByRegon(@PathVariable String regon, Model model) {
+        Publisher publisher = publisherService.findByRegon(regon);
+        if (publisher != null) {
+            model.addAttribute("publishers", Arrays.asList(publisher));
+        } else {
+            model.addAttribute("message", "Nie znaleziono wydawcy o podanym numerze Regon");
+        }
+        return "/publisher/list";
     }
 }

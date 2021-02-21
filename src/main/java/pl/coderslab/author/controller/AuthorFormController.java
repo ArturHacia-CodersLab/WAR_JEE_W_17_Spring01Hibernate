@@ -3,12 +3,15 @@ package pl.coderslab.author.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.author.entity.Author;
 import pl.coderslab.author.service.AuthorService;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/author/form")
@@ -30,7 +33,10 @@ public class AuthorFormController {
     }
 
     @PostMapping("/add")
-    public String save(Author author) {
+    public String save(@Valid Author author, BindingResult result) {
+        if (result.hasErrors()) {
+            return "/author/form";
+        }
         authorService.saveAuthor(author);
         return "redirect:/author/form/all";
     }
@@ -42,8 +48,11 @@ public class AuthorFormController {
     }
 
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable long id, Author author) {
+    public String update(@PathVariable long id, @Valid Author author, BindingResult result) {
         if (author.getId() == id) {
+            if (result.hasErrors()) {
+                return "/author/form";
+            }
             authorService.update(author);
         }
         return "redirect:/author/form/all";
@@ -59,5 +68,17 @@ public class AuthorFormController {
     public String delete(@PathVariable long id) {
         authorService.delete(id);
         return "redirect:/author/form/all";
+    }
+
+    @GetMapping("/manual/email/{email}")
+    public String findAuthorsByEmailBegin(@PathVariable String email, Model model) {
+        model.addAttribute("authors", authorService.findAuthorsByEmailBegin(email));
+        return "/author/list";
+    }
+
+    @GetMapping("/manual/pesel/{pesel}")
+    public String findAuthorsByPeselBegin(@PathVariable String pesel, Model model) {
+        model.addAttribute("authors", authorService.findAuthorsByPeselBegin(pesel));
+        return "/author/list";
     }
 }
